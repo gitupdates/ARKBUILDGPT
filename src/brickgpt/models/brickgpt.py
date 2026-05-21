@@ -1,7 +1,7 @@
 import copy
 import functools
 import json
-import warnings
+import logging
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -13,6 +13,8 @@ from transformers.generation.logits_process import PrefixConstrainedLogitsProces
 
 from brickgpt.data import max_brick_dimension, BrickStructure, Brick
 from .llm import LLM
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -144,7 +146,7 @@ class BrickGPT:
             if self.max_regenerations == 0 or self._is_stable(bricks):
                 break
             if regeneration_num == self.max_regenerations:
-                warnings.warn(f'Failed to generate a stable structure after {regeneration_num + 1} attempts.\n')
+                logger.warning(f'Failed to generate a stable structure after {regeneration_num + 1} attempts.\n')
                 break
             starting_bricks = self._remove_all_bricks_after_first_unstable_brick(bricks)
 
@@ -218,10 +220,10 @@ class BrickGPT:
             if add_brick_result == 'success':
                 break
             if generation_num == self.max_brick_rejections:
-                warnings.warn(f'Failed to generate a valid brick after {generation_num + 1} attempts.\n'
-                              f'Last generated brick: {brick}\n'
-                              f'Reasons for rejection: {rejection_reasons}\n'
-                              f'Brick structure: {bricks.to_txt()}\n')
+                logger.warning(f'Failed to generate a valid brick after {generation_num + 1} attempts.\n'
+                               f'Last generated brick: {brick}\n'
+                               f'Reasons for rejection: {rejection_reasons}\n'
+                               f'Brick structure: {bricks.to_txt()}\n')
                 break
 
             # Reset if brick is invalid

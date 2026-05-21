@@ -1,9 +1,11 @@
+import logging
 import re
-import warnings
 from dataclasses import dataclass
 
 import networkx as nx
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 from mesh2brick.data.brick_library import (brick_library, dimensions_to_brick_id, brick_id_to_dimensions,
                                            brick_id_to_part_id, part_id_to_brick_id)
@@ -125,7 +127,7 @@ class BrickStructure:
         # Check if structure starts at ground level
         z0 = min((brick.z for brick in bricks), default=0)
         if z0 != 0:
-            warnings.warn('Brick structure does not start at ground level z=0.')
+            logger.warning('Brick structure does not start at ground level z=0.')
 
         # Build structure from bricks
         self.bricks = []

@@ -1,8 +1,10 @@
+import logging
 import re
-import warnings
 from dataclasses import dataclass
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 from brickgpt.stability_analysis import stability_score, StabilityConfig, connectivity_score
 from .brick_library import (brick_library,
@@ -125,7 +127,7 @@ class BrickStructure:
         # Check if structure starts at ground level
         z0 = min((brick.z for brick in bricks), default=0)
         if z0 != 0:
-            warnings.warn('Brick structure does not start at ground level z=0.')
+            logger.warning('Brick structure does not start at ground level z=0.')
 
         # Build structure from bricks
         self.bricks = []
